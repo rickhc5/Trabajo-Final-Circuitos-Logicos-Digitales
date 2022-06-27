@@ -1,0 +1,47 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+use ieee.numeric_std.all; 
+
+
+library mibiblioteca; 
+use mibiblioteca.Componentes.all; 
+
+entity Cronom is
+port (
+	 R1 : in std_logic; 
+	 R2: in std_logic; 
+    CLK1      : in std_logic; 
+    CLK2      : in std_logic; 
+    MM : out std_logic_vector(3 downto 0);
+    SS : out std_logic_vector(3 downto 0);
+	 salida: out std_logic_vector (6 downto 0);
+	 cur_salida: out std_logic_vector (3 downto 0)
+	 
+    ); 
+
+end Cronom; 
+
+architecture estructural of Cronom is 
+
+signal a : std_logic_vector(3 downto 0); 
+signal b : std_logic_vector(3 downto 0); 
+signal c : std_logic_vector(3 downto 0); 
+signal d : std_logic_vector(3 downto 0); 
+signal s : std_logic_vector(1 downto 0);
+signal sal : std_logic_vector(1 downto 0);
+signal Q1: std_logic_vector(3 downto 0);
+signal Q0: std_logic_vector(3 downto 0);
+signal BCD: std_logic_vector(6 downto 0);
+signal T1: std_logic_vector(3 downto 0);
+begin 
+    U0: TFcircuitos port map (CLK1,R1,b,a,d,c);
+    U1: MOD4 port map (CLK2,sal);
+    U2: MUXA port map (a=>c, b=>d, s=>sal, z=>Q1);
+    U3: MUXB port map (a=>a, b=>b, s=>sal, z=>Q0);
+    U4: muxdisplay_top port map (sal, Q1, Q0,BCD, T1 );
+MM<=Q1;
+SS<=Q0;
+cur_salida<=T1;
+salida <= BCD; 
+end estructural;
